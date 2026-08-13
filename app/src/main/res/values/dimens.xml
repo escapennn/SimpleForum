@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 尺寸统一放这里，避免布局里到处写死 dp -->
+    <dimen name="page_padding">16dp</dimen>
+    <dimen name="card_padding">14dp</dimen>
+    <dimen name="card_radius">10dp</dimen>
+    <dimen name="card_margin">10dp</dimen>
+    <dimen name="item_gap">12dp</dimen>
+
+    <dimen name="text_title_large">22sp</dimen>
+    <dimen name="text_title">17sp</dimen>
+    <dimen name="text_body">15sp</dimen>
+    <dimen name="text_caption">13sp</dimen>
+    <dimen name="text_tiny">11sp</dimen>
+
+    <dimen name="avatar_size">40dp</dimen>
+    <dimen name="avatar_size_small">30dp</dimen>
+    <dimen name="avatar_size_large">72dp</dimen>
+
+    <dimen name="button_height">46dp</dimen>
+    <dimen name="input_height">48dp</dimen>
+    <dimen name="toolbar_height">52dp</dimen>
+    <dimen name="bottom_bar_height">54dp</dimen>
+    <dimen name="divider_height">0.5dp</dimen>
+
+    <dimen name="icon_small">18dp</dimen>
+    <dimen name="icon_normal">22dp</dimen>
+</resources>

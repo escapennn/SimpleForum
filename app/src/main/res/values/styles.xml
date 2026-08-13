@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- 主题继承 Material Components，日间模式先做一套，深色后面再说 -->
+    <style name="Theme.SimpleForum" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/brand_primary</item>
+        <item name="colorPrimaryDark">@color/brand_primary_dark</item>
+        <item name="colorAccent">@color/brand_accent</item>
+        <item name="android:colorBackground">@color/bg_page</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:statusBarColor">@color/bg_page</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:navigationBarColor">@color/bg_card</item>
+    </style>
+
+    <style name="Theme.SimpleForum.Splash">
+        <item name="android:windowBackground">@drawable/bg_splash</item>
+        <item name="android:statusBarColor">@color/brand_primary</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+    </style>
+
+    <!-- 标题栏 -->
+    <style name="AppToolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/toolbar_height</item>
+        <item name="android:background">@color/bg_card</item>
+        <item name="android:elevation">0dp</item>
+    </style>
+
+    <style name="ToolbarTitle">
+        <item name="android:textSize">@dimen/text_title</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- 输入框 -->
+    <style name="AppEditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/input_height</item>
+        <item name="android:background">@drawable/bg_input</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- 主按钮 -->
+    <style name="AppButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/button_height</item>
+        <item name="android:background">@drawable/bg_button_primary</item>
+        <item name="android:textColor">@color/text_on_primary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="AppButton.Outline">
+        <item name="android:background">@drawable/bg_button_outline</item>
+        <item name="android:textColor">@color/brand_primary</item>
+    </style>
+
+    <!-- 卡片 -->
+    <style name="AppCard">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_card</item>
+        <item name="android:layout_marginStart">@dimen/card_margin</item>
+        <item name="android:layout_marginEnd">@dimen/card_margin</item>
+        <item name="android:layout_marginTop">@dimen/card_margin</item>
+        <item name="android:padding">@dimen/card_padding</item>
+    </style>
+
+    <!-- 文本样式 -->
+    <style name="TextTitle">
+        <item name="android:textSize">@dimen/text_title</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextBody">
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <style name="TextCaption">
+        <item name="android:textSize">@dimen/text_caption</item>
+        <item name="android:textColor">@color/text_tertiary</item>
+    </style>
+
+    <style name="TextTag">
+        <item name="android:textSize">@dimen/text_tiny</item>
+        <item name="android:textColor">@color/tag_text</item>
+        <item name="android:background">@drawable/bg_tag</item>
+        <item name="android:paddingStart">6dp</item>
+        <item name="android:paddingEnd">6dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+    </style>
+</resources>
