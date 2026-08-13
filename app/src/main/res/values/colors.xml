@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 主色调走一个偏冷的蓝紫，论坛类看着舒服一点 -->
+    <color name="brand_primary">#4A6CF7</color>
+    <color name="brand_primary_dark">#3554D1</color>
+    <color name="brand_primary_light">#E8EDFE</color>
+    <color name="brand_accent">#FF6B6B</color>
+
+    <color name="text_primary">#1A1A1A</color>
+    <color name="text_secondary">#666666</color>
+    <color name="text_tertiary">#999999</color>
+    <color name="text_hint">#BBBBBB</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <color name="bg_page">#F5F6F8</color>
+    <color name="bg_card">#FFFFFF</color>
+    <color name="bg_input">#F2F3F5</color>
+    <color name="divider">#EEEEEE</color>
+
+    <color name="state_success">#2FBF71</color>
+    <color name="state_warning">#F5A623</color>
+    <color name="state_error">#E5484D</color>
+
+    <color name="tag_bg">#EEF1FF</color>
+    <color name="tag_text">#4A6CF7</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="scrim">#66000000</color>
+</resources>
