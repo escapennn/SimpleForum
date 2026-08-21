@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_card"
+    android:orientation="vertical">
+
+    <!-- 自己撸一个简单的标题栏，两边留白对称 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/action_cancel"
+            android:padding="11dp"
+            android:src="@drawable/ic_arrow_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/action_register"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_title"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height"
+        android:background="@color/divider" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="28dp"
+            android:paddingTop="28dp"
+            android:paddingEnd="28dp"
+            android:paddingBottom="28dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="创建一个账号"
+                android:textColor="@color/text_primary"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="用户名 3-16 位，只能用字母数字和下划线"
+                android:textColor="@color/text_tertiary"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/et_username"
+                style="@style/AppEditText"
+                android:layout_marginTop="26dp"
+                android:hint="@string/hint_username"
+                android:inputType="text"
+                android:maxLength="16" />
+
+            <EditText
+                android:id="@+id/et_nickname"
+                style="@style/AppEditText"
+                android:layout_marginTop="12dp"
+                android:hint="@string/hint_nickname"
+                android:inputType="text"
+                android:maxLength="12" />
+
+            <EditText
+                android:id="@+id/et_email"
+                style="@style/AppEditText"
+                android:layout_marginTop="12dp"
+                android:hint="@string/hint_email"
+                android:inputType="textEmailAddress"
+                android:maxLength="40" />
+
+            <EditText
+                android:id="@+id/et_password"
+                style="@style/AppEditText"
+                android:layout_marginTop="12dp"
+                android:hint="@string/hint_password"
+                android:inputType="textPassword"
+                android:maxLength="20" />
+
+            <EditText
+                android:id="@+id/et_password_confirm"
+                style="@style/AppEditText"
+                android:layout_marginTop="12dp"
+                android:hint="@string/hint_password_confirm"
+                android:inputType="textPassword"
+                android:maxLength="20" />
+
+            <TextView
+                android:id="@+id/btn_register"
+                style="@style/AppButton"
+                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:text="@string/action_register" />
+
+            <TextView
+                android:id="@+id/tv_to_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:padding="6dp"
+                android:text="@string/to_login"
+                android:textColor="@color/brand_primary"
+                android:textSize="13sp" />
+
+            <CheckBox
+                android:id="@+id/cb_agreement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:buttonTint="@color/brand_primary"
+                android:text="我已阅读并同意《用户协议》和《隐私政策》"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
