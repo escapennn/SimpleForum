@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height"
+        android:background="@color/divider" />
+
+    <LinearLayout
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_bar_height"
+        android:background="@color/bg_card"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/tab_home"
+            style="@style/BottomTabItem">
+
+            <ImageView
+                android:id="@+id/iv_tab_home"
+                style="@style/BottomTabIcon"
+                android:contentDescription="@string/tab_home"
+                android:src="@drawable/ic_tab_home" />
+
+            <TextView
+                android:id="@+id/tv_tab_home"
+                style="@style/BottomTabText"
+                android:text="@string/tab_home" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tab_category"
+            style="@style/BottomTabItem">
+
+            <ImageView
+                android:id="@+id/iv_tab_category"
+                style="@style/BottomTabIcon"
+                android:contentDescription="@string/tab_category"
+                android:src="@drawable/ic_tab_category" />
+
+            <TextView
+                android:id="@+id/tv_tab_category"
+                style="@style/BottomTabText"
+                android:text="@string/tab_category" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tab_message"
+            style="@style/BottomTabItem">
+
+            <ImageView
+                android:id="@+id/iv_tab_message"
+                style="@style/BottomTabIcon"
+                android:contentDescription="@string/tab_message"
+                android:src="@drawable/ic_tab_message" />
+
+            <TextView
+                android:id="@+id/tv_tab_message"
+                style="@style/BottomTabText"
+                android:text="@string/tab_message" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tab_mine"
+            style="@style/BottomTabItem">
+
+            <ImageView
+                android:id="@+id/iv_tab_mine"
+                style="@style/BottomTabIcon"
+                android:contentDescription="@string/tab_mine"
+                android:src="@drawable/ic_tab_mine" />
+
+            <TextView
+                android:id="@+id/tv_tab_mine"
+                style="@style/BottomTabText"
+                android:text="@string/tab_mine" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
