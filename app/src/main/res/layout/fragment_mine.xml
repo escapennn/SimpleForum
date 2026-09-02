@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- 用户信息卡 -->
+        <LinearLayout
+            android:id="@+id/ll_user_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_profile_header"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingTop="28dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="28dp">
+
+            <ImageView
+                android:id="@+id/iv_avatar"
+                android:layout_width="@dimen/avatar_size_large"
+                android:layout_height="@dimen/avatar_size_large"
+                android:background="@drawable/bg_avatar_placeholder"
+                android:contentDescription="头像"
+                android:src="@drawable/ic_avatar_default" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_nickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:text="管理员" />
+
+                <TextView
+                    android:id="@+id/tv_signature"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:alpha="0.85"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#E8EDFE"
+                    android:textSize="12sp"
+                    tools:text="这里的管理员，有问题可以私信我" />
+
+                <TextView
+                    android:id="@+id/tv_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_level_badge"
+                    android:paddingStart="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="2dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp"
+                    tools:text="Lv.8" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 数据统计 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/card_margin"
+            android:layout_marginTop="-14dp"
+            android:layout_marginEnd="@dimen/card_margin"
+            android:background="@drawable/bg_card"
+            android:elevation="2dp"
+            android:orientation="horizontal"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp">
+
+            <LinearLayout
+                android:id="@+id/ll_stat_topic"
+                style="@style/ProfileStatItem">
+
+                <TextView
+                    android:id="@+id/tv_topic_count"
+                    style="@style/ProfileStatNumber"
+                    tools:text="12" />
+
+                <TextView
+                    style="@style/ProfileStatLabel"
+                    android:text="@string/my_topics" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="@dimen/divider_height"
+                android:layout_height="28dp"
+                android:layout_gravity="center_vertical"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:id="@+id/ll_stat_reply"
+                style="@style/ProfileStatItem">
+
+                <TextView
+                    android:id="@+id/tv_reply_count"
+                    style="@style/ProfileStatNumber"
+                    tools:text="24" />
+
+                <TextView
+                    style="@style/ProfileStatLabel"
+                    android:text="@string/my_replies" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="@dimen/divider_height"
+                android:layout_height="28dp"
+                android:layout_gravity="center_vertical"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:id="@+id/ll_stat_exp"
+                style="@style/ProfileStatItem">
+
+                <TextView
+                    android:id="@+id/tv_exp"
+                    style="@style/ProfileStatNumber"
+                    tools:text="860" />
+
+                <TextView
+                    style="@style/ProfileStatLabel"
+                    android:text="经验值" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 功能入口 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/card_margin"
+            android:layout_marginTop="@dimen/card_margin"
+            android:layout_marginEnd="@dimen/card_margin"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_my_topics"
+                style="@style/ProfileMenuItem">
+
+                <ImageView
+                    style="@style/ProfileMenuIcon"
+                    android:contentDescription="@string/my_topics"
+                    android:src="@drawable/ic_edit" />
+
+                <TextView
+                    style="@style/ProfileMenuText"
+                    android:text="@string/my_topics" />
+
+                <ImageView style="@style/ProfileMenuArrow" />
+            </LinearLayout>
+
+            <View style="@style/ProfileMenuDivider" />
+
+            <LinearLayout
+                android:id="@+id/ll_my_replies"
+                style="@style/ProfileMenuItem">
+
+                <ImageView
+                    style="@style/ProfileMenuIcon"
+                    android:contentDescription="@string/my_replies"
+                    android:src="@drawable/ic_comment_small" />
+
+                <TextView
+                    style="@style/ProfileMenuText"
+                    android:text="@string/my_replies" />
+
+                <ImageView style="@style/ProfileMenuArrow" />
+            </LinearLayout>
+
+            <View style="@style/ProfileMenuDivider" />
+
+            <LinearLayout
+                android:id="@+id/ll_my_collect"
+                style="@style/ProfileMenuItem">
+
+                <ImageView
+                    style="@style/ProfileMenuIcon"
+                    android:contentDescription="@string/my_collect"
+                    android:src="@drawable/ic_star" />
+
+                <TextView
+                    style="@style/ProfileMenuText"
+                    android:text="@string/my_collect" />
+
+                <ImageView style="@style/ProfileMenuArrow" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/card_margin"
+            android:layout_marginTop="@dimen/card_margin"
+            android:layout_marginEnd="@dimen/card_margin"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_settings"
+                style="@style/ProfileMenuItem">
+
+                <ImageView
+                    style="@style/ProfileMenuIcon"
+                    android:contentDescription="@string/settings"
+                    android:src="@drawable/ic_settings" />
+
+                <TextView
+                    style="@style/ProfileMenuText"
+                    android:text="@string/settings" />
+
+                <ImageView style="@style/ProfileMenuArrow" />
+            </LinearLayout>
+
+            <View style="@style/ProfileMenuDivider" />
+
+            <LinearLayout
+                android:id="@+id/ll_about"
+                style="@style/ProfileMenuItem">
+
+                <ImageView
+                    style="@style/ProfileMenuIcon"
+                    android:contentDescription="@string/about"
+                    android:src="@drawable/ic_info" />
+
+                <TextView
+                    style="@style/ProfileMenuText"
+                    android:text="@string/about" />
+
+                <ImageView style="@style/ProfileMenuArrow" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/btn_logout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginStart="@dimen/card_margin"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="@dimen/card_margin"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/bg_button_outline"
+            android:gravity="center"
+            android:text="@string/action_logout"
+            android:textColor="@color/state_error"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+</ScrollView>
