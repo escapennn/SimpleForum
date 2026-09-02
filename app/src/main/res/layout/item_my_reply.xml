@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/card_margin"
+    android:layout_marginTop="@dimen/card_margin"
+    android:layout_marginEnd="@dimen/card_margin"
+    android:background="@drawable/bg_card"
+    android:orientation="vertical"
+    android:padding="@dimen/card_padding">
+
+    <TextView
+        android:id="@+id/tv_reply_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:lineSpacingExtra="4dp"
+        android:maxLines="3"
+        android:textColor="@color/text_primary"
+        android:textSize="14sp"
+        tools:text="看下 gradle-wrapper.properties 里的版本对不对，我之前也是这个问题" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height"
+        android:layout_marginTop="10dp"
+        android:background="@color/divider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="回复了"
+            android:textColor="@color/text_hint"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tv_topic_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/brand_primary"
+            android:textSize="12sp"
+            tools:text="Android Studio 升级到最新版后 Gradle 一直报错" />
+
+        <TextView
+            android:id="@+id/tv_reply_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/text_hint"
+            android:textSize="11sp"
+            tools:text="3小时前" />
+    </LinearLayout>
+</LinearLayout>
