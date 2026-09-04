@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:background="@color/bg_card">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_centerVertical="true"
+            android:contentDescription="返回"
+            android:padding="11dp"
+            android:src="@drawable/ic_arrow_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/settings"
+            android:textColor="@color/text_primary"
+            android:textSize="@dimen/text_title"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height"
+        android:background="@color/divider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/card_margin"
+        android:layout_marginTop="@dimen/card_margin"
+        android:layout_marginEnd="@dimen/card_margin"
+        android:background="@drawable/bg_card"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_nickname"
+            style="@style/ProfileMenuItem">
+
+            <TextView
+                style="@style/ProfileMenuText"
+                android:layout_marginStart="0dp"
+                android:text="修改昵称" />
+
+            <TextView
+                android:id="@+id/tv_nickname_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:textColor="@color/text_tertiary"
+                android:textSize="13sp"
+                android:text="未设置" />
+
+            <ImageView style="@style/ProfileMenuArrow" />
+        </LinearLayout>
+
+        <View style="@style/ProfileMenuDivider" />
+
+        <LinearLayout
+            android:id="@+id/ll_signature"
+            style="@style/ProfileMenuItem">
+
+            <TextView
+                style="@style/ProfileMenuText"
+                android:layout_marginStart="0dp"
+                android:text="个性签名" />
+
+            <TextView
+                android:id="@+id/tv_signature_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:ellipsize="end"
+                android:maxWidth="160dp"
+                android:maxLines="1"
+                android:textColor="@color/text_tertiary"
+                android:textSize="13sp"
+                android:text="未设置" />
+
+            <ImageView style="@style/ProfileMenuArrow" />
+        </LinearLayout>
+
+        <View style="@style/ProfileMenuDivider" />
+
+        <LinearLayout
+            android:id="@+id/ll_clear_cache"
+            style="@style/ProfileMenuItem">
+
+            <TextView
+                style="@style/ProfileMenuText"
+                android:layout_marginStart="0dp"
+                android:text="清空本地数据" />
+
+            <TextView
+                android:id="@+id/tv_cache_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:textColor="@color/text_tertiary"
+                android:textSize="13sp" />
+
+            <ImageView style="@style/ProfileMenuArrow" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/card_margin"
+        android:layout_marginTop="@dimen/card_margin"
+        android:layout_marginEnd="@dimen/card_margin"
+        android:background="@drawable/bg_card"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_version"
+            style="@style/ProfileMenuItem">
+
+            <TextView
+                style="@style/ProfileMenuText"
+                android:layout_marginStart="0dp"
+                android:text="版本号" />
+
+            <TextView
+                android:id="@+id/tv_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_tertiary"
+                android:textSize="13sp"
+                android:text="1.0.0" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
