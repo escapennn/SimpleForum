@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:background="@color/bg_card"
+        android:paddingStart="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/tab_message"
+            android:textColor="@color/text_primary"
+            android:textSize="19sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height"
+        android:background="@color/divider" />
+
+    <!-- 消息类型入口 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/card_margin"
+        android:layout_marginTop="@dimen/card_margin"
+        android:layout_marginEnd="@dimen/card_margin"
+        android:background="@drawable/bg_card"
+        android:orientation="horizontal"
+        android:paddingTop="18dp"
+        android:paddingBottom="18dp">
+
+        <LinearLayout style="@style/ProfileStatItem">
+
+            <TextView
+                style="@style/ProfileStatNumber"
+                android:text="0" />
+
+            <TextView
+                style="@style/ProfileStatLabel"
+                android:text="回复我的" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/ProfileStatItem">
+
+            <TextView
+                style="@style/ProfileStatNumber"
+                android:text="0" />
+
+            <TextView
+                style="@style/ProfileStatLabel"
+                android:text="收到的赞" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/ProfileStatItem">
+
+            <TextView
+                style="@style/ProfileStatNumber"
+                android:text="0" />
+
+            <TextView
+                style="@style/ProfileStatLabel"
+                android:text="系统通知" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 空状态 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:alpha="0.25"
+            android:contentDescription="空"
+            android:src="@drawable/ic_tab_message" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="暂时没有新消息"
+            android:textColor="@color/text_tertiary"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="消息推送功能还在开发中"
+            android:textColor="@color/text_hint"
+            android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>
