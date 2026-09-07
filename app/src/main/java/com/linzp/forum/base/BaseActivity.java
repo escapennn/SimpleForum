@@ -1,5 +1,6 @@
 package com.linzp.forum.base;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -20,11 +21,11 @@ public abstract class BaseActivity extends AppCompatActivity {
      * 页面跳转，集中管理方便以后加转场动画
      */
     protected void navigateTo(Class<?> target) {
-        startActivity(new android.content.Intent(this, target));
+        startActivity(new Intent(this, target));
     }
 
     protected void navigateTo(Class<?> target, Bundle extras) {
-        android.content.Intent intent = new android.content.Intent(this, target);
+        Intent intent = new Intent(this, target);
         if (extras != null) {
             intent.putExtras(extras);
         }
