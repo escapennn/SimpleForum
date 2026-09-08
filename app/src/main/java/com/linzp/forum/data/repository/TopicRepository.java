@@ -60,6 +60,9 @@ public class TopicRepository {
         return topicDao.queryByCategory(categoryId);
     }
 
+    /**
+     * 打开详情页时调这个，会把浏览量 +1。
+     */
     public TopicEntity getTopicDetail(long topicId) {
         TopicEntity topic = topicDao.queryById(topicId);
         if (topic != null) {
@@ -68,6 +71,20 @@ public class TopicRepository {
             topic.setViewCount(topic.getViewCount() + 1);
         }
         return topic;
+    }
+
+    /**
+     * 只读地拿一条帖子，不产生任何副作用。
+     * 之前有的地方（比如点赞回调、我的回复列表查标题）误用了 getTopicDetail，
+     * 结果点个赞浏览量也跟着涨，这里单独拆出来。
+     */
+    public TopicEntity getTopicById(long topicId) {
+        return topicDao.queryById(topicId);
+    }
+
+    public String getTopicTitle(long topicId) {
+        TopicEntity topic = topicDao.queryById(topicId);
+        return topic == null ? null : topic.getTitle();
     }
 
     public List<ReplyEntity> getReplies(long topicId) {
