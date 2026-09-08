@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.linzp.forum.R;
 import com.linzp.forum.data.entity.ReplyEntity;
-import com.linzp.forum.data.entity.TopicEntity;
 import com.linzp.forum.data.repository.TopicRepository;
 import com.linzp.forum.util.TimeUtils;
 
@@ -80,8 +79,11 @@ public class MyContentAdapter extends RecyclerView.Adapter<MyContentAdapter.Repl
         if (topicTitleCache.containsKey(topicId)) {
             return topicTitleCache.get(topicId);
         }
-        TopicEntity topic = TopicRepository.getInstance(context).getTopicDetail(topicId);
-        String title = (topic == null) ? "帖子已删除" : topic.getTitle();
+        // 用只读方法，不能调 getTopicDetail，那个会把浏览量加上去
+        String title = TopicRepository.getInstance(context).getTopicTitle(topicId);
+        if (TextUtils.isEmpty(title)) {
+            title = "帖子已删除";
+        }
         topicTitleCache.put(topicId, title);
         return title;
     }
