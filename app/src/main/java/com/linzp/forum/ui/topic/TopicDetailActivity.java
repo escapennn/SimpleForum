@@ -196,17 +196,18 @@ public class TopicDetailActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void run() {
                 final boolean liked = topicRepository.toggleLike(topicId);
-                final TopicEntity updated = topicRepository.getTopicDetail(topicId);
+                // 只读刷新，不要用 getTopicDetail，否则点个赞浏览量也在涨
+                final TopicEntity updated = topicRepository.getTopicById(topicId);
                 mainHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         if (isFinishing() || isDestroyed() || updated == null) {
                             return;
                         }
-                        // getTopicDetail 会把浏览量 +1，这里不需要，抹掉
-                        updated.setViewCount(currentTopic.getViewCount());
                         currentTopic = updated;
                         updateLikeBar(updated);
+                        // 头部的点赞数也要跟着变，单独刷第 0 项
+                        adapter.notifyItemChanged(0);
                         ToastUtils.show(TopicDetailActivity.this,
                                 liked ? "已点赞" : "已取消点赞");
                     }

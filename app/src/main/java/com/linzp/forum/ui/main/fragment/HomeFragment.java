@@ -239,17 +239,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                final boolean nowLiked = topicRepository.toggleLike(topic.getId());
-                final TopicEntity updated = topicRepository.getTopicDetail(topic.getId());
+                topicRepository.toggleLike(topic.getId());
+                // 用只读方法取最新状态，别用 getTopicDetail，那个会顺手把浏览量 +1
+                final TopicEntity updated = topicRepository.getTopicById(topic.getId());
                 mainHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         if (!isAdded() || updated == null) {
                             return;
                         }
-                        // 详情那里浏览数会 +1，列表里的数字要还原回去，不然每次点赞都涨
-                        updated.setViewCount(topic.getViewCount());
-                        adapter.notifyItemChanged(position);
+                        // 只更这一条，整表刷新会闪
+                        adapter.updateItem(position, updated);
                     }
                 });
             }
