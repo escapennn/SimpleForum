@@ -36,11 +36,21 @@ public class TopicDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private TopicEntity topic;
 
     private OnReplyActionListener actionListener;
+    private OnAuthorClickListener authorClickListener;
 
     public interface OnReplyActionListener {
         void onReplyClick(ReplyEntity reply, int position);
 
         void onReplyLikeClick(ReplyEntity reply, int position);
+    }
+
+    /** 点头像/昵称进个人主页 */
+    public interface OnAuthorClickListener {
+        void onAuthorClick(long authorId);
+    }
+
+    public void setOnAuthorClickListener(OnAuthorClickListener listener) {
+        this.authorClickListener = listener;
     }
 
     public TopicDetailAdapter(Context context) {
@@ -161,6 +171,18 @@ public class TopicDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 ivAvatar.setBackgroundResource(R.drawable.bg_avatar_placeholder);
                 ivAvatar.setImageResource(R.drawable.ic_avatar_default);
             }
+
+            // 点头像或昵称都能进 TA 的主页
+            View.OnClickListener authorClick = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (authorClickListener != null && t.getAuthorId() > 0) {
+                        authorClickListener.onAuthorClick(t.getAuthorId());
+                    }
+                }
+            };
+            ivAvatar.setOnClickListener(authorClick);
+            tvAuthorName.setOnClickListener(authorClick);
         }
     }
 
@@ -236,6 +258,15 @@ public class TopicDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 public void onClick(View v) {
                     if (actionListener != null) {
                         actionListener.onReplyLikeClick(reply, index);
+                    }
+                }
+            });
+
+            ivAvatar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (authorClickListener != null && reply.getAuthorId() > 0) {
+                        authorClickListener.onAuthorClick(reply.getAuthorId());
                     }
                 }
             });

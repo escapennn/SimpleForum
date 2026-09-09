@@ -1,5 +1,6 @@
 package com.linzp.forum.ui.topic;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,6 +25,7 @@ import com.linzp.forum.data.prefs.UserSession;
 import com.linzp.forum.data.repository.TopicRepository;
 import com.linzp.forum.data.repository.UserRepository;
 import com.linzp.forum.ui.adapter.TopicDetailAdapter;
+import com.linzp.forum.ui.profile.UserProfileActivity;
 import com.linzp.forum.util.ToastUtils;
 
 import java.util.List;
@@ -121,6 +123,19 @@ public class TopicDetailActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onReplyLikeClick(ReplyEntity reply, int position) {
                 ToastUtils.show(TopicDetailActivity.this, "评论点赞后面再做");
+            }
+        });
+        adapter.setOnAuthorClickListener(new TopicDetailAdapter.OnAuthorClickListener() {
+            @Override
+            public void onAuthorClick(long authorId) {
+                // 自己点自己就不用跳了
+                if (session.isCurrentUser(authorId)) {
+                    ToastUtils.show(TopicDetailActivity.this, "这是你自己发的");
+                    return;
+                }
+                Intent intent = new Intent(TopicDetailActivity.this, UserProfileActivity.class);
+                intent.putExtra(UserProfileActivity.EXTRA_USER_ID, authorId);
+                startActivity(intent);
             }
         });
 
