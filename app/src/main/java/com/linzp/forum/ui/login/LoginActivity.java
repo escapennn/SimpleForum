@@ -142,6 +142,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             return;
         }
 
+        // Application 里初始化演示账号是异步的，用户手快的话可能还没插完，
+        // 这里兜一下。ensureDemoUsers 内部有 count 判断和 synchronized，重复调没有副作用。
+        userRepository.ensureDemoUsers();
+
         UserEntity user = userRepository.login(account, password);
         if (user == null) {
             // 不区分"账号不存在"和"密码错误"，避免被撞库

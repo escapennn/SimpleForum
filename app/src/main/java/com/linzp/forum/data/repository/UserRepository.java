@@ -122,8 +122,9 @@ public class UserRepository {
 
     /**
      * 首次进入时把演示账号灌进去，否则没人能登录。
+     * 做了同步保护，Application 里的异步初始化和登录页的调用同时来也不会插两份。
      */
-    public void ensureDemoUsers() {
+    public synchronized void ensureDemoUsers() {
         if (userDao.countAll() > 0) {
             return;
         }

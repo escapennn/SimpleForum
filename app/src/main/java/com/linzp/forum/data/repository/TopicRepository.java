@@ -184,8 +184,9 @@ public class TopicRepository {
     /**
      * 没数据就初始化一次。
      * 判断条件用帖子数而不是用户数，因为帖子是主表。
+     * 加了 synchronized：首页和板块页可能同时首次加载，不加锁会插两份。
      */
-    private void ensureDataReady() {
+    private synchronized void ensureDataReady() {
         if (topicDao.countAll() > 0) {
             return;
         }
