@@ -171,10 +171,25 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
+     * 从板块页点进来时调，切到指定板块。
+     */
+    public void switchCategory(int categoryId) {
+        if (categoryId == currentCategoryId) {
+            return;
+        }
+        currentCategoryId = categoryId;
+        if (llCategoryTabs == null || llCategoryTabs.getChildCount() == 0) {
+            // 还没 onViewCreated，onViewCreated 里会自己加载，这里不用管
+            return;
+        }
+        highlightCategoryTab(categoryId);
+        reloadTopics();
+    }
+
+    /**
      * 重新加载列表。供外部调用（发帖成功后刷新）。
      */
-    public void reloadTopics() {
-        if (topicRepository == null) {
+    public void reloadTopics() {        if (topicRepository == null) {
             return;
         }
         executor.execute(new Runnable() {

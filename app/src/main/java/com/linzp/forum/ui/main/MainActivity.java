@@ -209,6 +209,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    /**
+     * 板块页点某个板块时，切回首页并筛选该板块。
+     */
+    public void openCategoryOnHome(int categoryId) {
+        switchTab(0);
+        if (homeFragment instanceof HomeFragment) {
+            ((HomeFragment) homeFragment).switchCategory(categoryId);
+        }
+    }
+
     public void switchToMine() {
         switchTab(3);
     }

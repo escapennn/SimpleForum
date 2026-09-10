@@ -1,14 +1,11 @@
 package com.linzp.forum.ui.main.fragment;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +17,7 @@ import com.linzp.forum.R;
 import com.linzp.forum.data.model.Category;
 import com.linzp.forum.data.repository.TopicRepository;
 import com.linzp.forum.ui.adapter.CategoryAdapter;
+import com.linzp.forum.ui.main.MainActivity;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,15 +48,27 @@ public class CategoryFragment extends Fragment {
             @Override
             public void onCategoryClick(Category category, int position) {
                 if (category.getId() == 0) {
-                    // "全部"不单独开页，提示去首页
+                    // "全部"没有单独的帖子页，直接切到首页看全部就行
+                    notifySwitchCategory(0);
                     return;
                 }
-                ToastHelper.show(requireContext(), "「" + category.getName() + "」的帖子可以在首页筛选查看");
+                // 板块页自己不展示帖子，切回首页并筛这个板块，
+                // 比在板块页再写一套列表逻辑省事
+                notifySwitchCategory(category.getId());
             }
         });
         rvCategory.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvCategory.setAdapter(adapter);
         return root;
+    }
+
+    /**
+     * 交给宿主 Activity 去切 tab 和筛选，Fragment 之间不直接引用。
+     */
+    private void notifySwitchCategory(int categoryId) {
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).openCategoryOnHome(categoryId);
+        }
     }
 
     @Override
@@ -107,12 +117,5 @@ public class CategoryFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         executor.shutdown();
-    }
-
-    /** 小工具，避免直接依赖 Activity 的 Toast */
-    private static class ToastHelper {
-        static void show(android.content.Context context, String msg) {
-            android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_SHORT).show();
-        }
     }
 }
