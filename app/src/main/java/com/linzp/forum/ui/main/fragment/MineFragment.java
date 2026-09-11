@@ -226,8 +226,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         new AlertDialog.Builder(requireContext())
                 .setTitle("关于")
                 .setMessage("微光论坛 v1.0.0\n\n" +
-                        "面向中文社区的移动端论坛应用，\n" +
-                        "致力于为用户提供简洁流畅的交流体验。")
+                        "一个中文社区的移动端论坛应用。\n" +
+                        "有使用上的问题或者建议，欢迎反馈。")
                 .setPositiveButton(R.string.action_confirm, null)
                 .show();
     }

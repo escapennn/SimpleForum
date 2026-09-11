@@ -126,7 +126,8 @@ public class TopicRepository {
     }
 
     /**
-     * 发评论。楼层号在插入前算好，避免并发下重复。
+     * 发评论。楼层号取当前最大楼层 +1。
+     * 没加事务，同一秒并发发两条理论上会撞楼层号，实际单人操作碰不到。
      */
     public long addReply(long topicId, ReplyEntity reply) {
         if (reply == null || TextUtils.isEmpty(reply.getContent())) {
