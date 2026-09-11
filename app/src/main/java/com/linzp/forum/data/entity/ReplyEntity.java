@@ -57,6 +57,10 @@ public class ReplyEntity implements Serializable {
     @ColumnInfo(name = "like_count", defaultValue = "0")
     private int likeCount;
 
+    /** 当前用户是否点过赞，0 否 1 是 */
+    @ColumnInfo(name = "liked", defaultValue = "0")
+    private int liked;
+
     public ReplyEntity() {
     }
 
@@ -138,5 +142,13 @@ public class ReplyEntity implements Serializable {
 
     public void setLikeCount(int likeCount) {
         this.likeCount = likeCount;
+    }
+
+    public boolean isLiked() {
+        return liked == 1;
+    }
+
+    public void setLiked(int liked) {
+        this.liked = liked;
     }
 }

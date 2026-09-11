@@ -17,6 +17,9 @@ public interface ReplyDao {
     @Query("SELECT * FROM reply WHERE topic_id = :topicId ORDER BY floor_no ASC")
     List<ReplyEntity> queryByTopic(long topicId);
 
+    @Query("SELECT * FROM reply WHERE id = :id LIMIT 1")
+    ReplyEntity queryById(long id);
+
     /** 分页取，详情页评论多的时候用 */
     @Query("SELECT * FROM reply WHERE topic_id = :topicId " +
             "ORDER BY floor_no ASC LIMIT :limit OFFSET :offset")
@@ -49,4 +52,7 @@ public interface ReplyDao {
 
     @Query("DELETE FROM reply WHERE topic_id = :topicId")
     void deleteByTopic(long topicId);
+
+    @Query("UPDATE reply SET like_count = like_count + :delta, liked = :liked WHERE id = :id")
+    void updateLikeState(long id, int delta, int liked);
 }

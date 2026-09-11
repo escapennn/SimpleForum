@@ -168,6 +168,23 @@ public class TopicRepository {
         return nowLiked;
     }
 
+    /**
+     * 评论的点赞。逻辑和帖子点赞一样，取反以数据库为准。
+     */
+    public boolean toggleReplyLike(long replyId) {
+        ReplyEntity reply = replyDao.queryById(replyId);
+        if (reply == null) {
+            return false;
+        }
+        boolean nowLiked = !reply.isLiked();
+        int delta = nowLiked ? 1 : -1;
+        if (!nowLiked && reply.getLikeCount() <= 0) {
+            delta = 0;
+        }
+        replyDao.updateLikeState(replyId, delta, nowLiked ? 1 : 0);
+        return nowLiked;
+    }
+
     public boolean deleteTopic(long topicId) {
         TopicEntity topic = topicDao.queryById(topicId);
         if (topic == null) {

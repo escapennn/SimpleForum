@@ -220,6 +220,8 @@ public class TopicDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             tvTime.setText(TimeUtils.formatRelative(reply.getCreateTime()));
             tvContent.setText(reply.getContent());
             tvLikeCount.setText(String.valueOf(reply.getLikeCount()));
+            ivLike.setImageResource(reply.isLiked()
+                    ? R.drawable.ic_like_filled : R.drawable.ic_like_outline);
 
             if (!TextUtils.isEmpty(reply.getReplyToName())) {
                 tvReplyTo.setVisibility(View.VISIBLE);

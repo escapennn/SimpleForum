@@ -122,7 +122,7 @@ public class TopicDetailActivity extends BaseActivity implements View.OnClickLis
 
             @Override
             public void onReplyLikeClick(ReplyEntity reply, int position) {
-                ToastUtils.show(TopicDetailActivity.this, "评论点赞后面再做");
+                handleReplyLike(reply, position);
             }
         });
         adapter.setOnAuthorClickListener(new TopicDetailAdapter.OnAuthorClickListener() {
@@ -276,6 +276,35 @@ public class TopicDetailActivity extends BaseActivity implements View.OnClickLis
                         etReply.setHint(R.string.hint_reply);
                         hideSoftKeyboard(etReply);
                         loadDetail();
+                    }
+                });
+            }
+        });
+    }
+
+    private void handleReplyLike(final ReplyEntity reply, final int position) {
+        if (!session.isLoggedIn()) {
+            ToastUtils.show(this, "请先登录");
+            return;
+        }
+        if (reply == null) {
+            return;
+        }
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final boolean liked = topicRepository.toggleReplyLike(reply.getId());
+                mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isFinishing() || isDestroyed()) {
+                            return;
+                        }
+                        // 数据源里的对象同步改掉，不然滑出屏幕再回来状态又回去了
+                        reply.setLiked(liked ? 1 : 0);
+                        reply.setLikeCount(reply.getLikeCount() + (liked ? 1 : -1));
+                        // 列表里评论从第 1 格开始，前面还有帖子本体
+                        adapter.notifyItemChanged(position + 1);
                     }
                 });
             }
