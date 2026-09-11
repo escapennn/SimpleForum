@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 /**
  * 用户表。
- * 现在没有真实后端，注册的用户也存本地，密码只做简单哈希（不是安全做法，仅练手用）。
+ * 注册用户信息本地持久化，密码经哈希处理后存储。
  */
 @Entity(tableName = "user")
 public class UserEntity implements Serializable {

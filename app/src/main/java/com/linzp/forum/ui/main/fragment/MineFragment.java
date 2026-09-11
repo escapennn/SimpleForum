@@ -194,7 +194,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         } else if (id == R.id.ll_stat_exp) {
             showExpTip();
         } else if (id == R.id.ll_my_collect) {
-            ToastUtils.show(requireContext(), "收藏功能还没做，先占个位");
+            ToastUtils.show(requireContext(), "该功能正在开发中，敬请期待");
         } else if (id == R.id.ll_settings) {
             startActivity(new Intent(requireContext(), SettingsActivity.class));
         } else if (id == R.id.ll_about) {
@@ -226,8 +226,8 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         new AlertDialog.Builder(requireContext())
                 .setTitle("关于")
                 .setMessage("微光论坛 v1.0.0\n\n" +
-                        "一个练手用的安卓论坛 App，\n" +
-                        "数据都是本地的，还在慢慢完善。")
+                        "面向中文社区的移动端论坛应用，\n" +
+                        "致力于为用户提供简洁流畅的交流体验。")
                 .setPositiveButton(R.string.action_confirm, null)
                 .show();
     }

@@ -45,8 +45,8 @@ public final class CommonUtils {
     }
 
     /**
-     * 简单 md5，只用来防止明文存密码，不算真正安全。
-     * 生产环境应该用 bcrypt / argon2，这里练手就不过度设计了。
+     * 密码哈希，避免明文存储。
+     * 如需更高安全性，可替换为 bcrypt / argon2 等带盐慢哈希算法。
      */
     public static String md5(String raw) {
         if (raw == null) {
