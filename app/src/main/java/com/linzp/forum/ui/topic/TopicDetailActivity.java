@@ -40,6 +40,7 @@ public class TopicDetailActivity extends BaseActivity implements View.OnClickLis
     public static final String EXTRA_TOPIC_ID = "extra_topic_id";
 
     private ImageView ivBack;
+    private ImageView ivFavorite;
     private ImageView ivMore;
     private RecyclerView rvDetail;
     private SwipeRefreshLayout swipeRefresh;
@@ -60,6 +61,9 @@ public class TopicDetailActivity extends BaseActivity implements View.OnClickLis
 
     private long topicId;
     private TopicEntity currentTopic;
+
+    /** 当前用户有没有收藏这篇，进页面时查一次 */
+    private boolean favoriteState;
 
     /** 回复某个人时记下来，为空就是直接回复楼主 */
     private String replyToName;
@@ -86,6 +90,7 @@ public class TopicDetailActivity extends BaseActivity implements View.OnClickLis
 
     private void bindViews() {
         ivBack = findViewById(R.id.iv_back);
+        ivFavorite = findViewById(R.id.iv_favorite);
         ivMore = findViewById(R.id.iv_more);
         rvDetail = findViewById(R.id.rv_detail);
         swipeRefresh = findViewById(R.id.swipe_refresh);
@@ -97,6 +102,7 @@ public class TopicDetailActivity extends BaseActivity implements View.OnClickLis
         btnSend = findViewById(R.id.btn_send);
 
         ivBack.setOnClickListener(this);
+        ivFavorite.setOnClickListener(this);
         ivMore.setOnClickListener(this);
         btnLike.setOnClickListener(this);
         btnSend.setOnClickListener(this);
@@ -161,6 +167,7 @@ public class TopicDetailActivity extends BaseActivity implements View.OnClickLis
             public void run() {
                 final TopicEntity topic = topicRepository.getTopicDetail(topicId);
                 final List<ReplyEntity> replies = topicRepository.getReplies(topicId);
+                final boolean fav = topicRepository.isFavorite(session.getUserId(), topicId);
                 mainHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -176,9 +183,11 @@ public class TopicDetailActivity extends BaseActivity implements View.OnClickLis
                             return;
                         }
                         currentTopic = topic;
+                        favoriteState = fav;
                         adapter.setTopic(topic);
                         adapter.setReplies(replies);
                         updateLikeBar(topic);
+                        updateFavoriteIcon();
                     }
                 });
             }
@@ -311,6 +320,40 @@ public class TopicDetailActivity extends BaseActivity implements View.OnClickLis
         });
     }
 
+    private void updateFavoriteIcon() {
+        ivFavorite.setImageResource(favoriteState
+                ? R.drawable.ic_star_filled : R.drawable.ic_star_outline);
+    }
+
+    private void handleFavorite() {
+        if (!session.isLoggedIn()) {
+            ToastUtils.show(this, "请先登录");
+            return;
+        }
+        if (currentTopic == null) {
+            return;
+        }
+        final long userId = session.getUserId();
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final boolean nowFav = topicRepository.toggleFavorite(userId, topicId);
+                mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isFinishing() || isDestroyed()) {
+                            return;
+                        }
+                        favoriteState = nowFav;
+                        updateFavoriteIcon();
+                        ToastUtils.show(TopicDetailActivity.this,
+                                nowFav ? "已收藏" : "已取消收藏");
+                    }
+                });
+            }
+        });
+    }
+
     private void showMoreMenu() {
         if (currentTopic == null) {
             return;
@@ -414,6 +457,8 @@ public class TopicDetailActivity extends BaseActivity implements View.OnClickLis
         int id = v.getId();
         if (id == R.id.iv_back) {
             finish();
+        } else if (id == R.id.iv_favorite) {
+            handleFavorite();
         } else if (id == R.id.iv_more) {
             showMoreMenu();
         } else if (id == R.id.btn_like) {

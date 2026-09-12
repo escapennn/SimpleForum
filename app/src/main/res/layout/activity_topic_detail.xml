@@ -33,6 +33,17 @@
             android:textStyle="bold" />
 
         <ImageView
+            android:id="@+id/iv_favorite"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/iv_more"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="收藏"
+            android:padding="11dp"
+            android:src="@drawable/ic_star_outline" />
+
+        <ImageView
             android:id="@+id/iv_more"
             android:layout_width="44dp"
             android:layout_height="44dp"
