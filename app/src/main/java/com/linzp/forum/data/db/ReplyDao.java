@@ -55,4 +55,7 @@ public interface ReplyDao {
 
     @Query("UPDATE reply SET like_count = like_count + :delta, liked = :liked WHERE id = :id")
     void updateLikeState(long id, int delta, int liked);
+
+    @Query("DELETE FROM reply")
+    void clearAll();
 }

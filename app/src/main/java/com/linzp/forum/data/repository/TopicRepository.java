@@ -3,9 +3,11 @@ package com.linzp.forum.data.repository;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.linzp.forum.data.db.FavoriteDao;
 import com.linzp.forum.data.db.ForumDatabase;
 import com.linzp.forum.data.db.ReplyDao;
 import com.linzp.forum.data.db.TopicDao;
+import com.linzp.forum.data.entity.FavoriteEntity;
 import com.linzp.forum.data.entity.ReplyEntity;
 import com.linzp.forum.data.entity.TopicEntity;
 import com.linzp.forum.util.CommonUtils;
@@ -21,6 +23,7 @@ public class TopicRepository {
 
     private final TopicDao topicDao;
     private final ReplyDao replyDao;
+    private final FavoriteDao favoriteDao;
 
     private static volatile TopicRepository instance;
 
@@ -28,6 +31,7 @@ public class TopicRepository {
         ForumDatabase db = ForumDatabase.getInstance(context);
         this.topicDao = db.topicDao();
         this.replyDao = db.replyDao();
+        this.favoriteDao = db.favoriteDao();
     }
 
     public static TopicRepository getInstance(Context context) {
@@ -191,8 +195,39 @@ public class TopicRepository {
             return false;
         }
         replyDao.deleteByTopic(topicId);
+        favoriteDao.deleteByTopic(topicId);
         topicDao.delete(topic);
         return true;
+    }
+
+    /**
+     * 收藏 / 取消收藏。返回操作完是不是收藏状态。
+     */
+    public boolean toggleFavorite(long userId, long topicId) {
+        if (userId <= 0 || topicId <= 0) {
+            return false;
+        }
+        if (isFavorite(userId, topicId)) {
+            favoriteDao.deleteByUserAndTopic(userId, topicId);
+            return false;
+        }
+        FavoriteEntity favorite = new FavoriteEntity();
+        favorite.setUserId(userId);
+        favorite.setTopicId(topicId);
+        favorite.setCreateTime(System.currentTimeMillis());
+        favoriteDao.insert(favorite);
+        return true;
+    }
+
+    public boolean isFavorite(long userId, long topicId) {
+        return userId > 0 && favoriteDao.countByUserAndTopic(userId, topicId) > 0;
+    }
+
+    public List<TopicEntity> getFavoriteTopics(long userId) {
+        if (userId <= 0) {
+            return new ArrayList<>();
+        }
+        return favoriteDao.queryTopicsByUser(userId);
     }
 
     public int getTotalTopicCount() {
@@ -227,5 +262,7 @@ public class TopicRepository {
     /** 设置页的"清空数据"用，方便调试 */
     public void clearAllData() {
         topicDao.clearAll();
+        replyDao.clearAll();
+        favoriteDao.clearAll();
     }
 }

@@ -6,6 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.linzp.forum.data.entity.FavoriteEntity;
 import com.linzp.forum.data.entity.ReplyEntity;
 import com.linzp.forum.data.entity.TopicEntity;
 import com.linzp.forum.data.entity.UserEntity;
@@ -15,8 +16,9 @@ import com.linzp.forum.data.entity.UserEntity;
  * 版本号改动记得写 Migration，不然用户数据会丢。
  */
 @Database(
-        entities = {TopicEntity.class, ReplyEntity.class, UserEntity.class},
-        version = 1,
+        entities = {TopicEntity.class, ReplyEntity.class, UserEntity.class,
+                FavoriteEntity.class},
+        version = 2,
         exportSchema = false
 )
 public abstract class ForumDatabase extends RoomDatabase {
@@ -30,6 +32,8 @@ public abstract class ForumDatabase extends RoomDatabase {
     public abstract ReplyDao replyDao();
 
     public abstract UserDao userDao();
+
+    public abstract FavoriteDao favoriteDao();
 
     public static ForumDatabase getInstance(Context context) {
         if (instance == null) {
