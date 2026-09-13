@@ -43,6 +43,10 @@ public interface TopicDao {
     @Query("SELECT COUNT(*) FROM topic")
     int countAll();
 
+    /** 消息页用：我发过的帖子一共收了多少赞 */
+    @Query("SELECT IFNULL(SUM(like_count), 0) FROM topic WHERE author_id = :userId")
+    int sumLikesOfMyTopics(long userId);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(TopicEntity topic);
 

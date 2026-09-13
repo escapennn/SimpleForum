@@ -31,6 +31,23 @@ public interface ReplyDao {
     @Query("SELECT COUNT(*) FROM reply WHERE topic_id = :topicId")
     int countByTopic(long topicId);
 
+    /**
+     * 别人回复我的帖子。
+     * 自己回自己的不算，消息页不需要这种。
+     */
+    @Query("SELECT r.* FROM reply r INNER JOIN topic t ON r.topic_id = t.id " +
+            "WHERE t.author_id = :userId AND r.author_id != :userId " +
+            "ORDER BY r.create_time DESC LIMIT :limit")
+    List<ReplyEntity> queryRepliesToMyTopics(long userId, int limit);
+
+    @Query("SELECT COUNT(*) FROM reply r INNER JOIN topic t ON r.topic_id = t.id " +
+            "WHERE t.author_id = :userId AND r.author_id != :userId")
+    int countRepliesToMyTopics(long userId);
+
+    /** 消息页用：我发过的评论一共收了多少赞 */
+    @Query("SELECT IFNULL(SUM(like_count), 0) FROM reply WHERE author_id = :userId")
+    int sumLikesOfMyReplies(long userId);
+
     /** 取最大楼层，新评论楼层 +1 */
     @Query("SELECT IFNULL(MAX(floor_no), 0) FROM reply WHERE topic_id = :topicId")
     int queryMaxFloor(long topicId);

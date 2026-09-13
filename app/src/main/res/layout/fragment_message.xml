@@ -41,6 +41,7 @@
         <LinearLayout style="@style/ProfileStatItem">
 
             <TextView
+                android:id="@+id/tv_stat_reply"
                 style="@style/ProfileStatNumber"
                 android:text="0" />
 
@@ -52,6 +53,7 @@
         <LinearLayout style="@style/ProfileStatItem">
 
             <TextView
+                android:id="@+id/tv_stat_like"
                 style="@style/ProfileStatNumber"
                 android:text="0" />
 
@@ -60,9 +62,12 @@
                 android:text="收到的赞" />
         </LinearLayout>
 
-        <LinearLayout style="@style/ProfileStatItem">
+        <LinearLayout
+            android:id="@+id/ll_system_notice"
+            style="@style/ProfileStatItem">
 
             <TextView
+                android:id="@+id/tv_stat_system"
                 style="@style/ProfileStatNumber"
                 android:text="0" />
 
@@ -72,35 +77,50 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- 空状态 -->
-    <LinearLayout
+    <!-- 通知列表 / 空状态，两个叠在一起切显隐 -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/card_margin"
+        android:layout_weight="1">
 
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:alpha="0.25"
-            android:contentDescription="空"
-            android:src="@drawable/ic_tab_message" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_notice"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_card"
+            android:visibility="gone" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:text="暂时没有新消息"
-            android:textColor="@color/text_tertiary"
-            android:textSize="14sp" />
+        <LinearLayout
+            android:id="@+id/ll_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="消息推送功能还在开发中"
-            android:textColor="@color/text_hint"
-            android:textSize="12sp" />
-    </LinearLayout>
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:alpha="0.25"
+                android:contentDescription="空"
+                android:src="@drawable/ic_tab_message" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="暂时没有新消息"
+                android:textColor="@color/text_tertiary"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_empty_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="登录后可以查看别人给你回复的内容"
+                android:textColor="@color/text_hint"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </FrameLayout>
 </LinearLayout>

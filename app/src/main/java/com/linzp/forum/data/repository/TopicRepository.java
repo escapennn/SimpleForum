@@ -10,6 +10,7 @@ import com.linzp.forum.data.db.TopicDao;
 import com.linzp.forum.data.entity.FavoriteEntity;
 import com.linzp.forum.data.entity.ReplyEntity;
 import com.linzp.forum.data.entity.TopicEntity;
+import com.linzp.forum.data.model.NoticeItem;
 import com.linzp.forum.util.CommonUtils;
 
 import java.util.ArrayList;
@@ -228,6 +229,40 @@ public class TopicRepository {
             return new ArrayList<>();
         }
         return favoriteDao.queryTopicsByUser(userId);
+    }
+
+    /**
+     * 消息页的通知列表。
+     * 帖子标题要单独查一下，评论表里没存标题，就几条数据，不值得再写个 join 的实体。
+     */
+    public List<NoticeItem> getNotices(long userId) {
+        List<NoticeItem> notices = new ArrayList<>();
+        if (userId <= 0) {
+            return notices;
+        }
+        List<ReplyEntity> replies = replyDao.queryRepliesToMyTopics(userId, 30);
+        for (ReplyEntity reply : replies) {
+            NoticeItem item = new NoticeItem();
+            item.setTopicId(reply.getTopicId());
+            item.setTopicTitle(getTopicTitle(reply.getTopicId()));
+            item.setFromName(reply.getAuthorName());
+            item.setContent(reply.getContent());
+            item.setCreateTime(reply.getCreateTime());
+            notices.add(item);
+        }
+        return notices;
+    }
+
+    /** 消息页顶部那几个数字 */
+    public int countRepliesToMe(long userId) {
+        return userId > 0 ? replyDao.countRepliesToMyTopics(userId) : 0;
+    }
+
+    public int countLikesReceived(long userId) {
+        if (userId <= 0) {
+            return 0;
+        }
+        return topicDao.sumLikesOfMyTopics(userId) + replyDao.sumLikesOfMyReplies(userId);
     }
 
     public int getTotalTopicCount() {
