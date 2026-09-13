@@ -194,7 +194,7 @@ public class MineFragment extends Fragment implements View.OnClickListener {
         } else if (id == R.id.ll_stat_exp) {
             showExpTip();
         } else if (id == R.id.ll_my_collect) {
-            ToastUtils.show(requireContext(), "该功能正在开发中，敬请期待");
+            openMyContent(MyContentActivity.TYPE_FAVORITE);
         } else if (id == R.id.ll_settings) {
             startActivity(new Intent(requireContext(), SettingsActivity.class));
         } else if (id == R.id.ll_about) {

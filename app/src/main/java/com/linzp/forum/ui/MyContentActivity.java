@@ -28,14 +28,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * 我的帖子 / 我的回复。
- * 两个列表结构差太多，用两个 adapter 分开处理比硬塞一个简单。
+ * 我的帖子 / 我的回复 / 我的收藏。
+ * 列表结构差太多，用不同的 adapter 分开处理比硬塞一个简单。
+ * 收藏和帖子列表长得一样，直接复用 TopicAdapter。
  */
 public class MyContentActivity extends BaseActivity implements View.OnClickListener {
 
     public static final String EXTRA_TYPE = "extra_type";
     public static final int TYPE_TOPIC = 1;
     public static final int TYPE_REPLY = 2;
+    public static final int TYPE_FAVORITE = 3;
 
     private ImageView ivBack;
     private TextView tvTitle;
@@ -75,6 +77,10 @@ public class MyContentActivity extends BaseActivity implements View.OnClickListe
         if (contentType == TYPE_TOPIC) {
             tvTitle.setText(R.string.my_topics);
             tvEmpty.setText("你还没有发过帖子");
+            setupTopicList();
+        } else if (contentType == TYPE_FAVORITE) {
+            tvTitle.setText(R.string.my_collect);
+            tvEmpty.setText("还没有收藏过帖子");
             setupTopicList();
         } else {
             tvTitle.setText(R.string.my_replies);
@@ -132,6 +138,18 @@ public class MyContentActivity extends BaseActivity implements View.OnClickListe
                             }
                             topicAdapter.setData(topics);
                             toggleEmpty(topics.isEmpty());
+                        }
+                    });
+                } else if (contentType == TYPE_FAVORITE) {
+                    final List<TopicEntity> favorites = topicRepository.getFavoriteTopics(userId);
+                    mainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isFinishing() || isDestroyed()) {
+                                return;
+                            }
+                            topicAdapter.setData(favorites);
+                            toggleEmpty(favorites.isEmpty());
                         }
                     });
                 } else {
