@@ -66,6 +66,18 @@ public class TopicRepository {
     }
 
     /**
+     * 分页取首页列表。
+     * 返回的条数小于 pageSize 就说明到底了，外面不用再算总数。
+     */
+    public List<TopicEntity> loadHomeTopicsPage(int categoryId, int pageSize, int offset) {
+        ensureDataReady();
+        if (categoryId <= 0) {
+            return topicDao.queryAllPaged(pageSize, offset);
+        }
+        return topicDao.queryByCategoryPaged(categoryId, pageSize, offset);
+    }
+
+    /**
      * 打开详情页时调这个，会把浏览量 +1。
      */
     public TopicEntity getTopicDetail(long topicId) {

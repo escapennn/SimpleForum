@@ -42,6 +42,9 @@ import java.util.concurrent.Executors;
  */
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
+    /** 一次拉多少条 */
+    private static final int PAGE_SIZE = 10;
+
     private SwipeRefreshLayout swipeRefresh;
     private RecyclerView rvTopics;
     private LinearLayout llEmpty;
@@ -61,6 +64,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private int currentCategoryId = 0;
 
     private final List<TopicEntity> topicList = new ArrayList<>();
+
+    /** 正在拉下一页，防止滑到底连续触发几次 */
+    private boolean loadingMore = false;
+
+    /** 已经到底了，不用再请求 */
+    private boolean noMoreData = false;
 
     @Nullable
     @Override
@@ -120,6 +129,23 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         rvTopics.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvTopics.setAdapter(adapter);
         rvTopics.setHasFixedSize(false);
+        // 快滑到底的时候提前拉下一页，别等真的滑到头
+        rvTopics.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy <= 0) {
+                    return;
+                }
+                LinearLayoutManager lm = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (lm == null) {
+                    return;
+                }
+                int lastVisible = lm.findLastVisibleItemPosition();
+                if (lastVisible >= topicList.size() - 2) {
+                    loadMore();
+                }
+            }
+        });
     }
 
     /**
@@ -188,15 +214,43 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     /**
      * 重新加载列表。供外部调用（发帖成功后刷新）。
+     * 会从第一页重新拉，把之前的翻页状态清掉。
      */
-    public void reloadTopics() {        if (topicRepository == null) {
+    public void reloadTopics() {
+        if (topicRepository == null) {
             return;
+        }
+        loadPage(0, true);
+    }
+
+    private void refreshTopics() {
+        loadPage(0, true);
+    }
+
+    private void loadMore() {
+        if (loadingMore || noMoreData || topicList.isEmpty()) {
+            return;
+        }
+        loadPage(topicList.size(), false);
+    }
+
+    /**
+     * 拉一页数据。reset 为 true 表示是重新加载，要把列表清空从头上。
+     */
+    private void loadPage(final int offset, final boolean reset) {
+        if (loadingMore) {
+            return;
+        }
+        loadingMore = true;
+        if (reset) {
+            // 换了板块或者重新拉，之前的到底标记要清掉
+            noMoreData = false;
         }
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                final List<TopicEntity> result =
-                        topicRepository.loadHomeTopics(currentCategoryId);
+                final List<TopicEntity> result = topicRepository
+                        .loadHomeTopicsPage(currentCategoryId, PAGE_SIZE, offset);
                 mainHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -204,31 +258,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                             // Fragment 已经 detach 了，不要再碰 View
                             return;
                         }
-                        topicList.clear();
-                        topicList.addAll(result);
-                        adapter.setData(topicList);
-                        updateEmptyState();
-                    }
-                });
-            }
-        });
-    }
-
-    private void refreshTopics() {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                final List<TopicEntity> result =
-                        topicRepository.refreshHomeTopics(currentCategoryId);
-                mainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!isAdded()) {
-                            return;
+                        loadingMore = false;
+                        if (reset) {
+                            topicList.clear();
+                            topicList.addAll(result);
+                            adapter.setData(topicList);
+                        } else {
+                            // 翻页只往后追加，不用整表重绘
+                            topicList.addAll(result);
+                            adapter.addData(result);
                         }
-                        topicList.clear();
-                        topicList.addAll(result);
-                        adapter.setData(topicList);
+                        // 返回的比一页少，说明后面没有了
+                        noMoreData = result.size() < PAGE_SIZE;
                         updateEmptyState();
                         swipeRefresh.setRefreshing(false);
                     }

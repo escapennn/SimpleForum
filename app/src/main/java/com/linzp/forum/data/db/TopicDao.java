@@ -22,6 +22,14 @@ public interface TopicDao {
     @Query("SELECT * FROM topic ORDER BY is_top DESC, create_time DESC")
     List<TopicEntity> queryAll();
 
+    /** 首页分页用的两个查询，规则和上面保持一致，只是加了 LIMIT */
+    @Query("SELECT * FROM topic ORDER BY is_top DESC, create_time DESC LIMIT :limit OFFSET :offset")
+    List<TopicEntity> queryAllPaged(int limit, int offset);
+
+    @Query("SELECT * FROM topic WHERE category_id = :categoryId " +
+            "ORDER BY is_top DESC, create_time DESC LIMIT :limit OFFSET :offset")
+    List<TopicEntity> queryByCategoryPaged(int categoryId, int limit, int offset);
+
     /** 下拉刷新用，只取比某个时间新的 */
     @Query("SELECT * FROM topic WHERE create_time > :since ORDER BY create_time DESC")
     List<TopicEntity> queryNewerThan(long since);
