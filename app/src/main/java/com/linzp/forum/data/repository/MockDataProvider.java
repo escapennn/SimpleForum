@@ -13,6 +13,9 @@ import java.util.Random;
  * 本地假数据。
  * 目前没有服务端，先塞一批数据让页面能看出效果，
  * 等接口做好以后这个类整体删掉，Repository 换成网络实现。
+ *
+ * 帖子前几条是手写的，剩下的用标题和正文片段拼出来 —— 一条条贴太费劲，
+ * 而且分页那个功能得有三四十条数据才看得出效果。
  */
 public final class MockDataProvider {
 
@@ -21,168 +24,217 @@ public final class MockDataProvider {
     /** 第一次安装时插入的演示用户密码统一是 123456 */
     public static final String DEMO_PASSWORD = "123456";
 
+    /** 演示帖子总数，首页一页 10 条，正好能翻三页 */
+    private static final int TOPIC_COUNT = 30;
+
+    private static final long MINUTE = 60 * 1000L;
+    private static final long HOUR = 60 * MINUTE;
+    private static final long DAY = 24 * HOUR;
+
+    /** username、昵称、邮箱、签名、经验值 */
+    private static final String[][] USERS = {
+            {"admin", "管理员", "admin@forum.dev", "这里的管理员，有问题可以私信我", "9999"},
+            {"zhangwei", "张伟", "zhangwei@163.com", "前端搬砖三年，最近在学 Flutter", "860"},
+            {"liuyang", "刘洋", "liuyang@qq.com", "后端 Java 工程师，喜欢折腾服务器", "640"},
+            {"chenjing", "陈静", "chenjing@gmail.com", "UI 设计师，接单中，欢迎来聊", "420"},
+            {"wangfang", "王芳", "wangfang@126.com", "还在读书，前端菜鸟一枚", "180"},
+            {"zhaolei", "赵磊", "zhaolei@outlook.com", "十年 Android 老兵，现在带团队", "1580"},
+            {"sunqi", "孙琪", "sunqi@foxmail.com", "产品经理，日常和开发吵架", "350"},
+            {"zhouhao", "周浩", "zhouhao@163.com", "刚入行半年，多多指教", "90"},
+    };
+
+    /** 开头这几条手写，模板拼出来的看着还是差点意思 */
+    private static final String[][] FEATURED_TOPICS = {
+            {"大家的第一个 App 是怎么做出来的？",
+                    "我是从写一个记事本开始的，做完发现其实没想象中那么难，主要是环境配置劝退。\n\n想听听各位的经历，第一行 Hello World 到现在多久了？"},
+            {"Android Studio 升级到最新版后 Gradle 一直报错",
+                    "报错大概是 Could not resolve all files for configuration，清缓存、换源都试过，还是不行。\n\nAGP 版本 8.1.2，Gradle 8.2。"},
+            {"分享几个自己常用的效率工具",
+                    "1. Everything 文件搜索，秒杀 Windows 自带\n2. Snipaste 截图贴图，写文档神器\n3. Bandizip 解压，没有广告\n4. PowerToys 的 FancyZones 分屏很好用"},
+            {"关于 UI 设计规范的一点碎碎念",
+                    "最近接手一个项目，页面里字体大小有 8 种，间距有 11 种，看得我血压高。\n\n真心建议做设计的时候就把规范定下来，至少字号和间距收敛到四五档。"},
+            {"大三了，该考研还是直接找工作？",
+                    "专业是软件工程，成绩中等，项目经验不多。家里希望我考研，但我自己更想早点出来攒经验。\n\n有没有过来人给点建议。"},
+            {"记录一次线上 OOM 排查",
+                    "上周线上内存突然飙到 4G，重启才恢复。最后定位到一个列表接口把全量数据查出来塞进内存缓存了。\n\n教训：任何没有过期策略的本地缓存都是定时炸弹。"},
+            {"产品提需求的时候能不能把话说清楚",
+                    "今天收到一个需求：做一个好看一点的首页。\n\n好看是多好看？能不能给个参考？结果回我一句「你是专业的你看着办」。"},
+            {"RecyclerView 图片错乱问题终于解决了",
+                    "列表快速滑动的时候图片会跳到别的 item 上，查了半天。原因是复用 holder 的时候没重置 ImageView。"},
+            {"用 Java 写了一个简单的论坛 App",
+                    "就是本 App 的原型。功能有登录注册、发帖、评论、个人中心。代码放在 GitHub 上了，边写边记 commit。"},
+            {"有没有比较好用的记账 App 推荐",
+                    "之前用的那个开始弹广告了，想换一个。要求：不要广告，支持多账本，能导出 CSV 最好。"},
+    };
+
+    /** 标题模板，%s 处填一个技术名词或者场景 */
+    private static final String[] TITLE_TEMPLATES = {
+            "%s 到底要不要学，有点迷茫",
+            "求助：%s 用起来一堆坑",
+            "关于 %s，说点自己的看法",
+            "%s 踩坑记录，希望能帮到后来人",
+            "有没有人一起研究 %s",
+            "%s 这块有推荐的资料吗",
+            "记一次 %s 相关的排查过程",
+            "%s 入门到什么程度算够用了",
+    };
+
+    /** 填进标题里的话题词 */
+    private static final String[] SUBJECTS = {
+            "Kotlin 协程", "自定义 View", "Jetpack Compose", "单元测试", "性能优化",
+            "Gradle 插件", "RxJava", "Material 3", "内存泄漏排查", "组件化",
+            "Flutter", "TypeScript", "Docker", "K8s", "CI 流水线",
+            "数据库索引", "HTTP 缓存", "接口签名", "分布式锁", "日志规范",
+    };
+
+    /** 正文开头、中间、结尾三块拼一下，比一条条写省事 */
+    private static final String[] CONTENT_OPENERS = {
+            "最近在做一个小项目，用到 %s，遇到点问题想请教一下。",
+            "先说背景：%s 之前只是听过，这次是真上手写了一遍。",
+            "看了不少文章，还是觉得 %s 这块绕，说下我自己的理解。",
+            "身边好几个同事都在聊 %s，我也去试了试。",
+    };
+
+    private static final String[] CONTENT_DETAILS = {
+            "按文档写的能跑通，但换成我们项目的场景就不行了，暂时没想明白问题出在哪。",
+            "简单场景挺好用，复杂一点就到处是坑，文档写得也比较含糊。",
+            "对比了一下之前的写法，代码确实少了不少，就是调试的时候不太好看栈。",
+            "我的做法是先跑通最小可用版本，再一点点往项目里搬。",
+            "试了两天，整体感觉是能用，但别急着全量上，先挑个不重要的模块练手。",
+    };
+
+    private static final String[] CONTENT_ENDINGS = {
+            "有经验的朋友麻烦指点一下，先谢过。",
+            "以上是我的一点理解，说得不对的地方欢迎拍砖。",
+            "大家平时是怎么处理的？想听听别的思路。",
+            "先记在这里，后面有进展再更新。",
+    };
+
+    /** 评论模板，代码里拼一下就能生成一堆，不用手写 */
+    private static final String[] REPLY_TEMPLATES = {
+            "这个我们也踩过，%s",
+            "同意楼主，%s",
+            "补充一点：%s",
+            "不太认同，%s",
+            "收藏了，%s",
+    };
+
+    private static final String[] REPLY_POINTS = {
+            "最后是换了个写法才好",
+            "文档里其实有一行说明，很容易漏看",
+            "关键还是要知道它内部怎么跑的",
+            "多写两个 demo 就明白了",
+            "版本不一样行为也不太一样，注意看 release note",
+            "我觉得够用就行，不用投入太多",
+            "还是得结合实际项目去练",
+            "官方示例其实写得挺清楚的",
+    };
+
     private MockDataProvider() {
     }
+
+    // ---------------------------------------------------------------- 用户
 
     public static List<UserEntity> buildUsers() {
         List<UserEntity> users = new ArrayList<>();
         long now = System.currentTimeMillis();
 
-        users.add(createUser("admin", "管理员", "admin@forum.dev",
-                "这里的管理员，有问题可以私信我", 0, 9999, now - 200L * 24 * 3600 * 1000));
-        users.add(createUser("zhangwei", "张伟", "zhangwei@163.com",
-                "前端搬砖三年，最近在学 Flutter", 12, 860, now - 150L * 24 * 3600 * 1000));
-        users.add(createUser("liuyang", "刘洋", "liuyang@qq.com",
-                "后端 Java 工程师，喜欢折腾服务器", 8, 640, now - 120L * 24 * 3600 * 1000));
-        users.add(createUser("chenjing", "陈静", "chenjing@gmail.com",
-                "UI 设计师，接单中，欢迎来聊", 5, 420, now - 90L * 24 * 3600 * 1000));
-        users.add(createUser("wangfang", "王芳", "wangfang@126.com",
-                "还在读书，前端菜鸟一枚", 3, 180, now - 60L * 24 * 3600 * 1000));
-        users.add(createUser("zhaolei", "赵磊", "zhaolei@outlook.com",
-                "十年 Android 老兵，现在带团队", 20, 1580, now - 300L * 24 * 3600 * 1000));
-        users.add(createUser("sunqi", "孙琪", "sunqi@foxmail.com",
-                "产品经理，日常和开发吵架", 6, 350, now - 45L * 24 * 3600 * 1000));
-        users.add(createUser("zhouhao", "周浩", "zhouhao@163.com",
-                "刚入行半年，多多指教", 2, 90, now - 20L * 24 * 3600 * 1000));
-
+        for (int i = 0; i < USERS.length; i++) {
+            String[] row = USERS[i];
+            UserEntity user = new UserEntity();
+            user.setUsername(row[0]);
+            user.setNickname(row[1]);
+            user.setEmail(row[2]);
+            user.setPasswordHash(CommonUtils.md5(DEMO_PASSWORD));
+            user.setSignature(row[3]);
+            user.setAvatarUrl("");
+            user.setExp(Integer.parseInt(row[4]));
+            // 注册时间往前铺开，免得所有人都是同一天
+            user.setRegisterTime(now - (USERS.length - i) * 20L * DAY - i * 3L * HOUR);
+            // 演示用的统计值，看着别太空
+            user.setTopicCount(2 + RANDOM.nextInt(10));
+            user.setReplyCount(5 + RANDOM.nextInt(30));
+            users.add(user);
+        }
         return users;
     }
 
-    private static UserEntity createUser(String username, String nickname, String email,
-                                         String signature, int topicCount, int exp, long registerTime) {
-        UserEntity user = new UserEntity();
-        user.setUsername(username);
-        user.setNickname(nickname);
-        user.setEmail(email);
-        user.setPasswordHash(CommonUtils.md5(DEMO_PASSWORD));
-        user.setSignature(signature);
-        user.setAvatarUrl("");
-        user.setTopicCount(topicCount);
-        user.setReplyCount(topicCount * 2);
-        user.setExp(exp);
-        user.setRegisterTime(registerTime);
-        return user;
+    private static String userNameOf(int index) {
+        if (index < 1 || index > USERS.length) {
+            return "游客";
+        }
+        return USERS[index - 1][1];
     }
+
+    // ---------------------------------------------------------------- 帖子
 
     public static List<TopicEntity> buildTopics() {
         List<TopicEntity> topics = new ArrayList<>();
         long now = System.currentTimeMillis();
 
-        topics.add(buildTopic("大家的第一个 App 是怎么做出来的？",
-                "我是从写一个记事本开始的，做完发现其实没想象中那么难，主要是环境配置劝退。\n\n" +
-                        "想听听各位的经历，第一行 Hello World 到现在多久了？",
-                1, 1, "管理员", 2, 1860, 42, now - 2L * 3600 * 1000, 1, 1));
+        // 先放手写的那几条，管理员置顶第一条
+        for (int i = 0; i < FEATURED_TOPICS.length; i++) {
+            String[] row = FEATURED_TOPICS[i];
+            topics.add(buildTopic(row[0], row[1],
+                    categoryOf(i + 1),
+                    authorOf(i + 1),
+                    now - (i + 1) * 5L * HOUR,
+                    i == 0 ? 1 : 0,
+                    i % 3 == 0 ? 1 : 0));
+        }
 
-        topics.add(buildTopic("Android Studio 升级到最新版后 Gradle 一直报错",
-                "报错信息大概是 Could not resolve all files for configuration，\n" +
-                        "试过清缓存、换源都不行，有没有人碰到过？\n\n" +
-                        "AGP 版本 8.1.2，Gradle 8.2。",
-                2, 2, "张伟", 3, 428, 17, now - 5L * 3600 * 1000, 0, 0));
-
-        topics.add(buildTopic("分享几个自己常用的效率工具",
-                "1. Everything 文件搜索，秒杀 Windows 自带\n" +
-                        "2. Snipaste 截图贴图，写文档神器\n" +
-                        "3. Bandizip 解压，没有广告\n" +
-                        "4. PowerToys 的 FancyZones 分屏很好用\n\n" +
-                        "还有别的欢迎补充。",
-                5, 3, "刘洋", 1, 1204, 56, now - 8L * 3600 * 1000, 0, 1));
-
-        topics.add(buildTopic("关于 UI 设计规范的一点碎碎念",
-                "最近接手一个项目，页面里字体大小有 8 种，间距有 11 种，看得我血压高。\n\n" +
-                        "真心建议做设计的时候就把规范定下来，至少字号和间距收敛到 4-5 档。\n" +
-                        "后面改起来真的会省很多事。",
-                1, 4, "陈静", 2, 876, 33, now - 12L * 3600 * 1000, 0, 0));
-
-        topics.add(buildTopic("大三了，该考研还是直接找工作？",
-                "专业是软件工程，成绩中等，项目经验不多。\n" +
-                        "家里希望我考研，但我自己更想早点出来干活攒经验。\n" +
-                        "有没有过来人给点建议，感谢。",
-                4, 5, "王芳", 5, 642, 78, now - 20L * 3600 * 1000, 0, 0));
-
-        topics.add(buildTopic("记录一次线上 OOM 排查",
-                "上周线上突然内存飙到 4G，重启才恢复。\n\n" +
-                        "最后定位到是一个列表接口把全量数据查出来塞进内存缓存了，\n" +
-                        "数据从 2 万涨到 80 万之后直接顶不住。\n\n" +
-                        "教训：任何没有过期策略的本地缓存都是定时炸弹。",
-                2, 6, "赵磊", 3, 2340, 96, now - 1L * 24 * 3600 * 1000, 0, 1));
-
-        topics.add(buildTopic("产品提需求的时候能不能把话说清楚",
-                "今天收到一个需求：做一个好看一点的首页。\n\n" +
-                        "好看是多好看？能不能给个参考？\n" +
-                        "结果回我一句\"你是专业的你看着办\"。\n" +
-                        "……行吧。",
-                1, 7, "孙琪", 8, 1560, 143, now - 1L * 24 * 3600 * 1000 - 3 * 3600 * 1000, 0, 0));
-
-        topics.add(buildTopic("租房踩坑实录，希望大家别重复我的错误",
-                "上个月租了个房，看房时挺好的，住进去发现水压巨小，晚上洗澡像滴灌。\n" +
-                        "还有就是中介说的\"离地铁近\"，走 20 分钟。\n\n" +
-                        "总结：看房一定要晚上去，一定要开水龙头试。",
-                3, 8, "周浩", 2, 388, 21, now - 2L * 24 * 3600 * 1000, 0, 0));
-
-        topics.add(buildTopic("RecyclerView 图片错乱问题终于解决了",
-                "列表快速滑动的时候图片会跳到别的 item 上，查了半天。\n" +
-                        "原因是没有在 onBindViewHolder 里重置 ImageView，\n" +
-                        "复用的时候还留着上一个 holder 的图。\n\n" +
-                        "加一句 setImageDrawable(null) 就好了。",
-                2, 2, "张伟", 4, 692, 45, now - 3L * 24 * 3600 * 1000, 0, 0));
-
-        topics.add(buildTopic("有没有比较好用的记账 App 推荐",
-                "之前用的那个开始弹广告了，想换一个。\n" +
-                        "要求：不要广告，支持多账本，能导出 CSV 最好。\n" +
-                        "付费的也行，一次性买断最好。",
-                4, 3, "刘洋", 1, 534, 29, now - 4L * 24 * 3600 * 1000, 0, 0));
-
-        topics.add(buildTopic("养猫之后才知道的事",
-                "1. 猫真的会半夜在你脸上蹦迪\n" +
-                        "2. 猫毛无处不在，黑衣服基本告别\n" +
-                        "3. 你以为买的是猫窝，它只睡纸箱\n" +
-                        "4. 但是真的很治愈，值了",
-                3, 4, "陈静", 6, 1088, 67, now - 5L * 24 * 3600 * 1000, 0, 1));
-
-        topics.add(buildTopic("第一次面试，紧张到说话都在抖",
-                "昨天面了一家小公司，问的都是基础问题，\n" +
-                        "但我一紧张连 HashMap 底层都说不利索了。\n\n" +
-                        "面完感觉凉了，大家第一次面试都这样吗？",
-                4, 8, "周浩", 3, 286, 18, now - 6L * 24 * 3600 * 1000, 0, 0));
-
-        topics.add(buildTopic("整理了 50 个免费的编程学习资源",
-                "包括视频课、电子书、练习平台，按语言分类整理好了。\n" +
-                        "链接有点多就不贴了，评论区留邮箱我发网盘。\n\n" +
-                        "都是我自己用过觉得靠谱的，不是随便找的。",
-                5, 6, "赵磊", 2, 1876, 112, now - 7L * 24 * 3600 * 1000, 0, 1));
-
-        topics.add(buildTopic("关于加班这件事，大家怎么看",
-                "我们组最近连着两个月 996，项目不是特别急，\n" +
-                        "就是领导觉得\"大家都这样\"。\n\n" +
-                        "效率反而下降了，白天都在等晚上。\n" +
-                        "你们公司什么情况？",
-                1, 7, "孙琪", 5, 1420, 88, now - 8L * 24 * 3600 * 1000, 0, 0));
-
-        topics.add(buildTopic("用 Java 写了一个简单的论坛 App",
-                "就是本 App 的原型。功能有登录注册、发帖、评论、个人中心。\n" +
-                        "代码放在 GitHub 上了，边写边记 commit，\n" +
-                        "有兴趣的可以一起看看，欢迎提 issue。\n\n" +
-                        "技术栈：Java + XML + Room + Material Components，没上 MVVM，\n" +
-                        "先把手写 View 的路子走通再说。",
-                2, 1, "管理员", 4, 1650, 74, now - 9L * 24 * 3600 * 1000, 0, 1));
-
+        // 剩下的按模板拼，每条的板块、作者、时间都错开，看着不至于太整齐
+        int generated = TOPIC_COUNT - FEATURED_TOPICS.length;
+        for (int i = 0; i < generated; i++) {
+            String subject = SUBJECTS[i % SUBJECTS.length];
+            String title = String.format(
+                    TITLE_TEMPLATES[i % TITLE_TEMPLATES.length], subject);
+            String content = buildContent(subject, i);
+            long createTime = now - (FEATURED_TOPICS.length + i + 1) * 9L * HOUR
+                    - (i % 4) * 37L * MINUTE;
+            topics.add(buildTopic(title, content,
+                    categoryOf(i * 3 + 2),
+                    authorOf(i * 5 + 2),
+                    createTime,
+                    0,
+                    i % 7 == 5 ? 1 : 0));
+        }
         return topics;
     }
 
+    /** 三段拼一条正文，中间随机挑，跑出来的结果固定 */
+    private static String buildContent(String subject, int seed) {
+        String opener = String.format(
+                CONTENT_OPENERS[seed % CONTENT_OPENERS.length], subject);
+        String detail = CONTENT_DETAILS[(seed * 2 + 1) % CONTENT_DETAILS.length];
+        String ending = CONTENT_ENDINGS[(seed * 3 + 2) % CONTENT_ENDINGS.length];
+        return opener + "\n\n" + detail + "\n\n" + ending;
+    }
+
+    /** 板块轮着来，别全堆在一个板块里 */
+    private static int categoryOf(int seed) {
+        return seed % 5 + 1;
+    }
+
+    /** 作者在 8 个演示用户里轮，管理员也会发几条 */
+    private static int authorOf(int seed) {
+        return seed % USERS.length + 1;
+    }
+
     private static TopicEntity buildTopic(String title, String content, int categoryId,
-                                          long authorId, String authorName, int viewCount,
-                                          int likeCount, int replyCount, long createTime,
+                                          long authorId, long createTime,
                                           int isTop, int isEssence) {
         TopicEntity topic = new TopicEntity();
         topic.setTitle(title);
         topic.setContent(content);
         topic.setCategoryId(categoryId);
         topic.setAuthorId(authorId);
-        topic.setAuthorName(authorName);
+        topic.setAuthorName(userNameOf((int) authorId));
         topic.setAuthorAvatar("");
-        topic.setViewCount(viewCount);
-        topic.setLikeCount(likeCount);
-        topic.setReplyCount(replyCount);
+        // 浏览量按帖子的新旧给个范围，越老的看得越多
+        topic.setViewCount(200 + RANDOM.nextInt(2000));
+        topic.setLikeCount(RANDOM.nextInt(120));
+        topic.setReplyCount(0);
         topic.setCreateTime(createTime);
         topic.setUpdateTime(createTime);
         topic.setIsTop(isTop);
@@ -191,57 +243,54 @@ public final class MockDataProvider {
         return topic;
     }
 
+    // ---------------------------------------------------------------- 评论
+
     /**
-     * 给前几篇帖子配一些评论，不然详情页空荡荡的
+     * 每条帖子配 2-6 条评论，详情页才不至于空荡荡的。
+     * 楼层从 1 开始，楼主自己占 0 楼。
      */
     public static List<ReplyEntity> buildReplies(List<TopicEntity> topics) {
         List<ReplyEntity> replies = new ArrayList<>();
         if (topics == null || topics.isEmpty()) {
             return replies;
         }
-
-        String[][] replyTexts = new String[][]{
-                {"沙发！这个问题我也想过", "我是大二开始自学的，现在工作两年了", "关键是要动手，光看教程没用"},
-                {"看下 gradle-wrapper.properties 里的版本对不对", "换阿里云镜像试试 compileOnly 那个", "清一下 ~/.gradle/caches 目录"},
-                {"Snipaste 确实好用，推荐一个，你说的这几个我也都在用", "Bandizip 现在也加广告了，可以换 7-Zip"},
-                {"深有同感，我们现在就在改历史项目", "规范这东西，定的时候没人看，改的时候都想起来"},
-                {"建议先找工作，经验比学历重要，除非想进大厂", "看你自己想要什么，两条路都没错"},
-                {"这个排查过程记录得很清楚，学到了", "本地缓存真的不能随便乱加"},
-        };
-
-        long now = System.currentTimeMillis();
-        int replyId = 1;
-
-        for (int i = 0; i < topics.size() && i < replyTexts.length; i++) {
+        long replyId = 1;
+        for (int i = 0; i < topics.size(); i++) {
             TopicEntity topic = topics.get(i);
-            String[] texts = replyTexts[i];
-            for (int j = 0; j < texts.length; j++) {
-                ReplyEntity reply = new ReplyEntity();
-                reply.setTopicId(topic.getId());
-                reply.setContent(texts[j]);
-                reply.setFloorNo(j + 1);
-                reply.setCreateTime(topic.getCreateTime() + (j + 1) * 20L * 60 * 1000);
-
-                // 轮流用几个用户身份，不用真是随机，保证每次跑结果一样
-                int authorIndex = (i + j + 1) % 8 + 1;
-                reply.setAuthorId(authorIndex);
-                reply.setAuthorName(userNameOf(authorIndex));
-                reply.setAuthorAvatar("");
-                reply.setLikeCount(RANDOM.nextInt(8));
-                reply.setReplyToName(null);
-                reply.setId(replyId++);
-                replies.add(reply);
+            // 前几条手写的帖子评论多一点，看着热闹
+            int count = i < FEATURED_TOPICS.length
+                    ? 3 + RANDOM.nextInt(4) : 1 + RANDOM.nextInt(3);
+            for (int j = 0; j < count; j++) {
+                replies.add(buildReply(topic, i, j, replyId++));
             }
         }
-
         return replies;
     }
 
-    private static String userNameOf(int index) {
-        String[] names = {"管理员", "张伟", "刘洋", "陈静", "王芳", "赵磊", "孙琪", "周浩"};
-        if (index < 1 || index > names.length) {
-            return "游客";
-        }
-        return names[index - 1];
+    private static ReplyEntity buildReply(TopicEntity topic, int topicIndex,
+                                          int floor, long replyId) {
+        ReplyEntity reply = new ReplyEntity();
+        reply.setId(replyId);
+        reply.setTopicId(topic.getId());
+        reply.setContent(buildReplyText(topicIndex, floor));
+        reply.setFloorNo(floor + 1);
+        // 楼层越靠后时间越晚，不然评论区时间顺序是乱的
+        reply.setCreateTime(topic.getCreateTime() + (floor + 1) * 25L * MINUTE);
+
+        int authorId = authorOf(topicIndex + floor * 3 + 1);
+        reply.setAuthorId(authorId);
+        reply.setAuthorName(userNameOf(authorId));
+        reply.setAuthorAvatar("");
+        reply.setLikeCount(RANDOM.nextInt(9));
+        reply.setLiked(0);
+        // 每隔几条模拟一次"回复某人"
+        reply.setReplyToName(floor % 3 == 2 ? userNameOf(authorOf(topicIndex)) : null);
+        return reply;
+    }
+
+    private static String buildReplyText(int topicIndex, int floor) {
+        String template = REPLY_TEMPLATES[(topicIndex + floor) % REPLY_TEMPLATES.length];
+        String point = REPLY_POINTS[(topicIndex * 2 + floor) % REPLY_POINTS.length];
+        return String.format(template, point);
     }
 }
