@@ -51,4 +51,18 @@ public abstract class ForumDatabase extends RoomDatabase {
         }
         return instance;
     }
+
+    /**
+     * 关掉当前实例，把引用清掉。
+     * 清空数据之前必须先调这个：数据库文件还开着的时候删不掉，
+     * 之前一直以为删成功了，其实文件还在，重启一看数据全回来了。
+     */
+    public static synchronized void release() {
+        if (instance != null) {
+            if (instance.isOpen()) {
+                instance.close();
+            }
+            instance = null;
+        }
+    }
 }

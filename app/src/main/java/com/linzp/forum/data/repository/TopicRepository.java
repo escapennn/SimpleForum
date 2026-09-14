@@ -47,6 +47,13 @@ public class TopicRepository {
     }
 
     /**
+     * 数据库关掉之后这里的 Dao 也失效了，清空数据时跟着释放。
+     */
+    public static synchronized void releaseInstance() {
+        instance = null;
+    }
+
+    /**
      * 首页列表。数据库是空的话先灌 mock 数据，这样第一次装完就有东西看。
      */
     public List<TopicEntity> loadHomeTopics(int categoryId) {

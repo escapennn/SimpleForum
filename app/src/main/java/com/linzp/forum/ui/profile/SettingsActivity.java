@@ -15,8 +15,10 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.linzp.forum.R;
 import com.linzp.forum.base.BaseActivity;
+import com.linzp.forum.data.db.ForumDatabase;
 import com.linzp.forum.data.entity.UserEntity;
 import com.linzp.forum.data.prefs.UserSession;
+import com.linzp.forum.data.repository.TopicRepository;
 import com.linzp.forum.data.repository.UserRepository;
 import com.linzp.forum.util.ToastUtils;
 
@@ -256,13 +258,17 @@ public class SettingsActivity extends BaseActivity implements View.OnClickListen
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                // 直接删库文件最省事，反正只是缓存
+                // 先把 Room 关掉、缓存清掉，不然文件被占着删不干净
+                ForumDatabase.release();
+                TopicRepository.releaseInstance();
+                UserRepository.releaseInstance();
                 boolean deleted = deleteDatabase("simple_forum.db");
                 mainHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         tvCacheSize.setText("0 B");
-                        ToastUtils.show(SettingsActivity.this, "已清空，重启 App 生效");
+                        ToastUtils.show(SettingsActivity.this,
+                                deleted ? "已清空，重启 App 生效" : "清空失败，稍后再试");
                     }
                 });
             }

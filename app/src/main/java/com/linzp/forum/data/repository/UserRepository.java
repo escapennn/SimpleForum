@@ -34,6 +34,14 @@ public class UserRepository {
         return instance;
     }
 
+    /**
+     * 数据库被关掉之后，这里缓存着的老 Dao 就不能用了，
+     * 清空数据的时候跟着一起释放。
+     */
+    public static synchronized void releaseInstance() {
+        instance = null;
+    }
+
     public enum RegisterResult {
         SUCCESS,
         USERNAME_EXISTS,
