@@ -1,6 +1,8 @@
 package com.linzp.forum.ui.post;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -32,7 +34,7 @@ import java.util.concurrent.Executors;
 
 /**
  * 搜索页。
- * 搜索历史存在内存里，杀进程就没了，后面换成数据库或者 SP。
+ * 历史关键词落在 SharedPreferences 里，重启也还在，最多留 8 条。
  */
 public class SearchActivity extends BaseActivity implements View.OnClickListener {
 
@@ -50,6 +52,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
     private TopicAdapter adapter;
     private TopicRepository topicRepository;
+    private SharedPreferences historyPrefs;
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -63,6 +66,8 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         setContentView(R.layout.activity_search);
 
         topicRepository = TopicRepository.getInstance(this);
+        historyPrefs = getSharedPreferences("search_history", Context.MODE_PRIVATE);
+        loadHistory();
 
         ivBack = findViewById(R.id.iv_back);
         etSearch = findViewById(R.id.et_search);
@@ -137,6 +142,26 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         });
     }
 
+    /** 上次留下的关键词，一行一个 */
+    private void loadHistory() {
+        String saved = historyPrefs.getString("keywords", "");
+        if (!TextUtils.isEmpty(saved)) {
+            for (String k : saved.split("\n")) {
+                if (!TextUtils.isEmpty(k)) {
+                    historyList.add(k);
+                }
+            }
+        }
+        refreshHistoryChips();
+    }
+
+    private void saveHistory() {
+        // 关键词是手动输的，理论上有换行的可能，用 \n 分隔前先替掉
+        historyPrefs.edit()
+                .putString("keywords", TextUtils.join("\n", historyList))
+                .apply();
+    }
+
     private void addToHistory(String keyword) {
         if (historyList.contains(keyword)) {
             historyList.remove(keyword);
@@ -146,6 +171,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         while (historyList.size() > MAX_HISTORY) {
             historyList.remove(historyList.size() - 1);
         }
+        saveHistory();
         refreshHistoryChips();
     }
 
@@ -187,6 +213,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             finish();
         } else if (id == R.id.tv_clear_history) {
             historyList.clear();
+            saveHistory();
             refreshHistoryChips();
             rvResult.setVisibility(View.GONE);
             llEmpty.setVisibility(View.GONE);

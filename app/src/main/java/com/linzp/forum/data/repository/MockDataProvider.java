@@ -259,7 +259,7 @@ public final class MockDataProvider {
             TopicEntity topic = topics.get(i);
             // 前几条手写的帖子评论多一点，看着热闹
             int count = i < FEATURED_TOPICS.length
-                    ? 3 + RANDOM.nextInt(4) : 1 + RANDOM.nextInt(3);
+                    ? 4 + RANDOM.nextInt(4) : 2 + RANDOM.nextInt(3);
             for (int j = 0; j < count; j++) {
                 replies.add(buildReply(topic, i, j, replyId++));
             }
