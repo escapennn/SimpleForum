@@ -96,8 +96,8 @@
 | 构建工具 | Gradle 8.2 + Android Gradle Plugin 8.1.2 |
 | 本地数据存储 | Room 2.5.2 |
 | 图片加载 | Glide 4.15.1 |
-| UI 组件 | Material Components 1.9.0、RecyclerView、SwipeRefreshLayout、ViewPager2 |
-| 数据存储 | Room（本地持久化）+ SharedPreferences（登录态） |
+| UI 组件 | Material Components 1.9.0（Chip、Snackbar）、RecyclerView、SwipeRefreshLayout |
+| 数据存储 | Room（本地持久化）+ SharedPreferences（登录态、搜索历史） |
 
 **关于技术选型**
 
@@ -170,6 +170,14 @@ sdk.dir=C\:\\Users\\你的用户名\\AppData\\Local\\Android\\Sdk
 ### 3. 打开并构建
 
 使用 Android Studio 打开项目，等待 Gradle Sync 完成。
+
+也可以在终端直接构建（首次会下载 Gradle 8.2 与依赖）：
+
+```bash
+./gradlew assembleDebug        # Windows 用 gradlew.bat assembleDebug
+```
+
+构建产物在 `app/build/outputs/apk/debug/` 下。
 
 ### 4. 运行
 
