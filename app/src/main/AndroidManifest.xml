@@ -39,6 +39,10 @@
             android:launchMode="singleTask" />
 
         <activity
+            android:name=".ui.MyContentActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ui.topic.TopicDetailActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
